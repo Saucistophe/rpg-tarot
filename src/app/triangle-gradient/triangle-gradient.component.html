@@ -1,0 +1,10 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+
+  <polygon *ngFor="let triangle of triangleIndices; let index = index;"
+           [attr.fill]="getColor(triangle)"
+           stroke="none"
+           shape-rendering="crispEdges"
+           [attr.points]="roundedPoints[triangle[0]][0] + ',' + roundedPoints[triangle[0]][1] +' ' +
+  roundedPoints[triangle[1]][0] + ',' + roundedPoints[triangle[1]][1] +' ' +
+  roundedPoints[triangle[2]][0] + ',' + roundedPoints[triangle[2]][1]"/>
+</svg>

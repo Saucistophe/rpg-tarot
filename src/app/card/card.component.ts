@@ -13,8 +13,4 @@ export class CardComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-  get groundColors(): string[] {
-    return [Color('green').darken(0.2).hex(), Color('green').darken(0.7).hex()];
-  }
 }
