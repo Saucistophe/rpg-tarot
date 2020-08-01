@@ -3,11 +3,13 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { CardComponent } from './card/card.component';
+import { TriangleGradientComponent } from './triangle-gradient/triangle-gradient.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    CardComponent
+    CardComponent,
+    TriangleGradientComponent
   ],
   imports: [
     BrowserModule
