@@ -14,6 +14,9 @@ export class TriangleGradientComponent implements OnInit {
   triangleIndices: number[][];
 
   @Input()
+  yStretchPercentage = 100;
+
+  @Input()
   numberOfXTriangles: number;
 
   @Input()
@@ -32,11 +35,11 @@ export class TriangleGradientComponent implements OnInit {
     this.points = [];
     // Create a grid of points. They are spaced evenly across a [0,100] square.
     // Two points are added before and beyond the grid to ensure there are enough material to create edge triangles.
-    // A variation of roughly half a cell is added to spice things up without messing triangles.
+    // A variation of roughly a third of a cell is added to spice things up without messing triangles.
     for (let i = -2; i < this.numberOfXTriangles + 2; i++) {
       for (let j = -2; j < this.numberOfYTriangles + 2; j++) {
         const x = (i + 0.7 * (Math.random() - 0.5)) / this.numberOfXTriangles * 100;
-        const y = (j + 0.7 * (Math.random() - 0.5)) / this.numberOfXTriangles * 100;
+        const y = (j + 0.7 * (Math.random() - 0.5)) / this.numberOfYTriangles * this.yStretchPercentage;
         this.points.push([x, y]);
       }
     }
@@ -60,7 +63,7 @@ export class TriangleGradientComponent implements OnInit {
     const centroidY = (this.points[triangle[0]][1] + this.points[triangle[1]][1] + this.points[triangle[2]][1]) / 3;
 
     const xFraction = Math.min(Math.max(centroidX / 100, 0), 1);
-    const yFraction = Math.min(Math.max(centroidY / 100, 0), 1);
+    const yFraction = Math.min(Math.max(centroidY / this.yStretchPercentage, 0), 1);
 
     return this.colorFunction(xFraction, yFraction);
   }

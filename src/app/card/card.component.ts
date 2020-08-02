@@ -13,4 +13,8 @@ export class CardComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  skyColorFunction(x: number, y: number): string {
+    return Color('skyblue').lighten((1 - y) / 3).hex();
+  }
 }

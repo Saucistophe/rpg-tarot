@@ -11,5 +11,13 @@
     border-radius: 2mm;
     background: grey;
     overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    /*justify-content: center;
+    align-content: center;
+    page-break-after:always;
+    scroll-snap-align: start;*/
   }
 }
