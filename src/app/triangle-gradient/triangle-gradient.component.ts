@@ -9,6 +9,10 @@ import Color from 'color';
 })
 export class TriangleGradientComponent implements OnInit {
 
+  points: number[][];
+  roundedPoints: string[][];
+  triangleIndices: number[][];
+
   @Input()
   numberOfXTriangles: number;
 
@@ -18,26 +22,33 @@ export class TriangleGradientComponent implements OnInit {
   @Input()
   colors: string[];
 
-  points: number[][];
-  roundedPoints: string[][];
-  triangleIndices: number[][];
+  @Input()
+  colorFunction = (x: number, y: number) => Color('green').darken(y).hex();
 
   constructor(private elementRef: ElementRef) {
   }
 
   ngOnInit(): void {
     this.points = [];
+    // Create a grid of points. They are spaced evenly across a [0,100] square.
+    // Two points are added before and beyond the grid to ensure there are enough material to create edge triangles.
+    // A variation of roughly half a cell is added to spice things up without messing triangles.
     for (let i = -2; i < this.numberOfXTriangles + 2; i++) {
       for (let j = -2; j < this.numberOfYTriangles + 2; j++) {
-        this.points.push([(i + 0.7 * (Math.random() - 0.5)) / this.numberOfXTriangles * 100, (j + 0.7 * (Math.random() - 0.5)) / this.numberOfYTriangles * 100]);
+        const x = (i + 0.7 * (Math.random() - 0.5)) / this.numberOfXTriangles * 100;
+        const y = (j + 0.7 * (Math.random() - 0.5)) / this.numberOfXTriangles * 100;
+        this.points.push([x, y]);
       }
     }
 
-    this.roundedPoints = this.points.map(p => [p[0].toFixed(2), p[1].toFixed(2)]);
+    // Prepare a list of strings, rounded at one decimal to avoid silly numbers.
+    this.roundedPoints = this.points.map(p => [p[0].toFixed(1), p[1].toFixed(1)]);
 
+    // Create a Delaunay triangulation
     const rawTrianglesIndices = Delaunator.from(this.points).triangles;
-    this.triangleIndices = [];
 
+    // Group the indices into triplets
+    this.triangleIndices = [];
     for (let i = 0; i < rawTrianglesIndices.length / 3; i++) {
       this.triangleIndices.push(rawTrianglesIndices.slice(i * 3, i * 3 + 3));
     }
@@ -51,6 +62,6 @@ export class TriangleGradientComponent implements OnInit {
     const xFraction = Math.min(Math.max(centroidX / 100, 0), 1);
     const yFraction = Math.min(Math.max(centroidY / 100, 0), 1);
 
-    return Color('green').darken(yFraction).hex();
+    return this.colorFunction(xFraction, yFraction);
   }
 }
