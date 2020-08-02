@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import Delaunator from 'delaunator';
-import Color from 'color';
+import * as Color from 'color';
 
 @Component({
   selector: 'rpg-triangle-gradient',
@@ -26,7 +26,7 @@ export class TriangleGradientComponent implements OnInit {
   colors: string[];
 
   @Input()
-  colorFunction = (x: number, y: number) => Color('green').darken(y).hex();
+  colorFunction = (x: number, y: number) => Color('green').darken(y).hex()
 
   constructor(private elementRef: ElementRef) {
   }
