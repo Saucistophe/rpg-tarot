@@ -1,4 +1,4 @@
-import {Component, ElementRef, OnInit, Renderer2} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import * as Color from 'color';
 import * as smoothstep from 'smoothstep';
 
@@ -26,7 +26,7 @@ export class CardComponent implements OnInit {
   skyType = this.randomValueForEnum(SkyType);
   groundType = this.randomValueForEnum(GroundType);
 
-  constructor(private elementRef: ElementRef) {
+  constructor() {
   }
 
   ngOnInit(): void {
@@ -38,33 +38,53 @@ export class CardComponent implements OnInit {
     return enumeration[enumKey];
   }
 
-  get skyColorFunction(): ((x: number, y: number) => string) {
+  skyColorFunction = (x: number, y: number) => {
     switch (this.skyType) {
       case SkyType.CLEAR_DAY:
-        return (x: number, y: number) => Color('skyblue').lighten((1 - y) / 3).hex();
+        return Color('skyblue').lighten((1 - y) / 3).hex();
       case SkyType.DUSK:
-        return (x: number, y: number) => Color('indigo').rotate(80 * smoothstep(0, 1, y)).lighten(y *  0.8).desaturate(y * 0.1).hex();
+        return Color('indigo').rotate(80 * smoothstep(0, 1, y)).lighten(y * 0.8).desaturate(y * 0.1).hex();
       case SkyType.DAWN:
-        return (x: number, y: number) => Color('orange').rotate(50 * y).lighten(y * 0.8 ).hex();
+        return Color('orange').rotate(50 * y).lighten(y * 0.8).hex();
       case SkyType.NIGHT:
-        return (x: number, y: number) => Color('midnightblue').darken(0.8 - 0.8 * y).hex();
+        return Color('midnightblue').darken(0.8 - 0.8 * y).hex();
       default:
-        return (x: number, y: number) => 'purple';
+        return 'purple';
     }
   }
 
-  get groundColorFunction(): ((x: number, y: number) => string) {
+  groundColorFunction = (x: number, y: number) => {
+    let rawColor: Color;
     switch (this.groundType) {
       case GroundType.DIRT:
-        return (x: number, y: number) =>  Color('saddlebrown').darken(y).hex();
+        rawColor = Color('saddlebrown').darken(y * 0.7);
+        break;
       case GroundType.GRASS:
-        return (x: number, y: number) =>  Color('green').darken(y).hex();
+        rawColor = Color('forestgreen').darken(y * 0.7);
+        break;
       case GroundType.ROCK:
-        return (x: number, y: number) => Color('dimgray').darken(y * 0.8 ).hex();
+        rawColor = Color('darkgray').darken(y * 0.7);
+        break;
       case GroundType.SAND:
-        return (x: number, y: number) => Color('orange').rotate(10 * y).darken(y * 0.8 ).hex();
+        rawColor = Color('orange').rotate(10 * y).darken(y * 0.8);
+        break;
       default:
-        return (x: number, y: number) => 'purple';
+        rawColor = Color('purple');
     }
+
+    switch (this.skyType) {
+      case SkyType.DUSK:
+        rawColor = rawColor.darken(0.2).mix(Color('yellow'), 0.1);
+        break;
+      case SkyType.DAWN:
+        rawColor = rawColor.darken(0.2).mix(Color('red'), 0.1);
+        break;
+      case SkyType.NIGHT:
+        rawColor = rawColor.darken(0.35).mix(Color('midnightblue'), 0.1);
+        break;
+      case SkyType.CLEAR_DAY:
+        default:
+    }
+    return rawColor.hex();
   }
 }
