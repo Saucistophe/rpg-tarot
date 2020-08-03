@@ -39,52 +39,65 @@ export class CardComponent implements OnInit {
   }
 
   skyColorFunction = (x: number, y: number) => {
+    let color: Color;
+
     switch (this.skyType) {
       case SkyType.CLEAR_DAY:
-        return Color('skyblue').lighten((1 - y) / 3).hex();
+        color = Color('skyblue').lighten((1 - y) / 3);
+        break;
       case SkyType.DUSK:
-        return Color('indigo').rotate(80 * smoothstep(0, 1, y)).lighten(y * 0.8).desaturate(y * 0.1).hex();
+        color = Color('indigo').rotate(80 * smoothstep(0, 1, y)).lighten(y * 0.8).desaturate(y * 0.1);
+        break;
       case SkyType.DAWN:
-        return Color('orange').rotate(50 * y).lighten(y * 0.8).hex();
+        color = Color('orange').rotate(50 * y).lighten(y * 0.8);
+        break;
       case SkyType.NIGHT:
-        return Color('midnightblue').darken(0.8 - 0.8 * y).hex();
+        color = Color('midnightblue').darken(0.8 - 0.8 * y);
+        break;
       default:
-        return 'purple';
+        color = Color('purple');
+        break;
     }
+
+    // Clouds
+    // color = color.mix(Color('gray'), Math.max(0, 0.8 - 0.4 * Math.abs(y - 0.2)));
+
+    return color.hex();
   }
 
   groundColorFunction = (x: number, y: number) => {
-    let rawColor: Color;
+    let color: Color;
+
     switch (this.groundType) {
       case GroundType.DIRT:
-        rawColor = Color('saddlebrown').darken(y * 0.7);
+        color = Color('saddlebrown').darken(y * 0.7);
         break;
       case GroundType.GRASS:
-        rawColor = Color('forestgreen').darken(y * 0.7);
+        color = Color('forestgreen').darken(y * 0.7);
         break;
       case GroundType.ROCK:
-        rawColor = Color('darkgray').darken(y * 0.7);
+        color = Color('darkgray').darken(y * 0.7);
         break;
       case GroundType.SAND:
-        rawColor = Color('orange').rotate(10 * y).darken(y * 0.8);
+        color = Color('orange').rotate(10 * y).darken(y * 0.8);
         break;
       default:
-        rawColor = Color('purple');
+        color = Color('purple');
     }
 
     switch (this.skyType) {
       case SkyType.DUSK:
-        rawColor = rawColor.darken(0.2).mix(Color('yellow'), 0.1);
+        color = color.darken(0.2).mix(Color('yellow'), 0.1);
         break;
       case SkyType.DAWN:
-        rawColor = rawColor.darken(0.2).mix(Color('red'), 0.1);
+        color = color.darken(0.2).mix(Color('red'), 0.1);
         break;
       case SkyType.NIGHT:
-        rawColor = rawColor.darken(0.35).mix(Color('midnightblue'), 0.1);
+        color = color.darken(0.35).mix(Color('midnightblue'), 0.1);
         break;
       case SkyType.CLEAR_DAY:
-        default:
+      default:
     }
-    return rawColor.hex();
+    return color.hex();
   }
 }
