@@ -87,10 +87,10 @@ export class CardComponent implements OnInit {
 
     switch (this.skyType) {
       case SkyType.DUSK:
-        color = color.darken(0.2).mix(Color('yellow'), 0.1);
+        color = color.darken(0.2).mix(Color('red'), 0.1);
         break;
       case SkyType.DAWN:
-        color = color.darken(0.2).mix(Color('red'), 0.1);
+        color = color.darken(0.2).mix(Color('yellow'), 0.1);
         break;
       case SkyType.NIGHT:
         color = color.darken(0.35).mix(Color('midnightblue'), 0.1);

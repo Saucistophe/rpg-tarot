@@ -2,8 +2,9 @@
 
   <polygon *ngFor="let triangle of triangleIndices; let index = index;"
            [attr.fill]="getColor(triangle)"
-           stroke="none"
-           shape-rendering="crispEdges"
+           [attr.stroke]="getStrokeColor(triangle)"
+           stroke-width="0.2%"
+
            [attr.points]="roundedPoints[triangle[0]][0] + ',' + roundedPoints[triangle[0]][1] +' ' +
   roundedPoints[triangle[1]][0] + ',' + roundedPoints[triangle[1]][1] +' ' +
   roundedPoints[triangle[2]][0] + ',' + roundedPoints[triangle[2]][1]"/>

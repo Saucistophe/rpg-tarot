@@ -55,6 +55,13 @@ export class TriangleGradientComponent implements OnInit {
     for (let i = 0; i < rawTrianglesIndices.length / 3; i++) {
       this.triangleIndices.push(rawTrianglesIndices.slice(i * 3, i * 3 + 3));
     }
+
+    // Sort by centroid Y
+    this.triangleIndices.sort((t1, t2) => {
+      const y1 = t1.map(i => this.points[i][1]).reduce((a, v) => a + v);
+      const y2 = t1.map(i => this.points[i][1]).reduce((a, v) => a + v);
+      return y1 - y2;
+    });
   }
 
   getColor(triangle: number[]): string {
@@ -66,5 +73,10 @@ export class TriangleGradientComponent implements OnInit {
     const yFraction = Math.min(Math.max(centroidY / this.yStretchPercentage, 0), 1);
 
     return this.colorFunction(xFraction, yFraction);
+  }
+
+  getStrokeColor(triangle: number[]): string {
+    let triangleColor = this.getColor(triangle);
+    return Color(triangleColor).darken(0.0251).desaturate(0.125).hex();
   }
 }
