@@ -1,11 +1,15 @@
 <svg [attr.viewBox]="'0 0 100 ' + yStretchPercentage" xmlns="http://www.w3.org/2000/svg">
 
-  <polygon *ngFor="let triangle of triangleIndices; let index = index;"
+  <polygon *ngFor="let triangle of triangleIndices"
+           stroke="none"
            [attr.fill]="getColor(triangle)"
-           [attr.stroke]="getStrokeColor(triangle)"
-           stroke-width="0.2%"
-
            [attr.points]="roundedPoints[triangle[0]][0] + ',' + roundedPoints[triangle[0]][1] +' ' +
-  roundedPoints[triangle[1]][0] + ',' + roundedPoints[triangle[1]][1] +' ' +
-  roundedPoints[triangle[2]][0] + ',' + roundedPoints[triangle[2]][1]"/>
+              roundedPoints[triangle[1]][0] + ',' + roundedPoints[triangle[1]][1] +' ' +
+              roundedPoints[triangle[2]][0] + ',' + roundedPoints[triangle[2]][1]"/>
+  <line *ngFor="let edge of edges"
+        [attr.x1]="roundedPoints[edge[0]][0]"
+        [attr.x2]="roundedPoints[edge[1]][0]"
+        [attr.y1]="roundedPoints[edge[0]][1]"
+        [attr.y2]="roundedPoints[edge[1]][1]"
+        stroke-linecap="butt" [attr.stroke]="getEdgeColor(edge)" stroke-width="0.2%"/>
 </svg>

@@ -26,7 +26,7 @@ export class TriangleGradientComponent implements OnInit {
   colors: string[];
 
   @Input()
-  colorFunction = (x: number, y: number) => Color('green').darken(y).hex()
+  colorFunction = (x: number, y: number) => Color('green').darken(y).hex();
 
   constructor(private elementRef: ElementRef) {
   }
@@ -64,10 +64,15 @@ export class TriangleGradientComponent implements OnInit {
     });
   }
 
-  getColor(triangle: number[]): string {
-
-    const centroidX = (this.points[triangle[0]][0] + this.points[triangle[1]][0] + this.points[triangle[2]][0]) / 3;
-    const centroidY = (this.points[triangle[0]][1] + this.points[triangle[1]][1] + this.points[triangle[2]][1]) / 3;
+  getColor(shapeIndices: number[]): string {
+    let centroidX = 0;
+    let centroidY = 0;
+    for (const i of shapeIndices) {
+      centroidX += this.points[i][0];
+      centroidY += this.points[i][1];
+    }
+    centroidX /= shapeIndices.length;
+    centroidY /= shapeIndices.length;
 
     const xFraction = Math.min(Math.max(centroidX / 100, 0), 1);
     const yFraction = Math.min(Math.max(centroidY / this.yStretchPercentage, 0), 1);
@@ -75,8 +80,14 @@ export class TriangleGradientComponent implements OnInit {
     return this.colorFunction(xFraction, yFraction);
   }
 
-  getStrokeColor(triangle: number[]): string {
-    let triangleColor = this.getColor(triangle);
-    return Color(triangleColor).darken(0.0251).desaturate(0.125).hex();
+  getEdgeColor(triangle: number[]): string {
+    const triangleColor = Color(this.getColor(triangle));
+
+    return Color(triangleColor).darken(0.1).hex();
+  }
+
+  get edges(): number[][] {
+    console.log(this.triangleIndices.flatMap(t => [[t[0], t[1]], [t[1], t[2]], [t[2], t[0]]]));
+    return this.triangleIndices.flatMap(t => [[t[0], t[1]], [t[1], t[2]], [t[2], t[0]]]);
   }
 }
