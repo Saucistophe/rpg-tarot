@@ -33,6 +33,15 @@ $card-borders: dashed 0.5px gray;
         left: 30%;
         top: 35%;
       }
+
+      .heading {
+        text-align: center;
+        background-color: antiquewhite;
+        border-top: solid 0.5mm #121212;
+        border-bottom: solid 0.5mm #121212;
+
+        font-family: 'Chanticleer';
+      }
     }
   }
 }

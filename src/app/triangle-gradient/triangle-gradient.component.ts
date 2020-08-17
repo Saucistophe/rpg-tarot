@@ -87,7 +87,6 @@ export class TriangleGradientComponent implements OnInit {
   }
 
   get edges(): number[][] {
-    console.log(this.triangleIndices.flatMap(t => [[t[0], t[1]], [t[1], t[2]], [t[2], t[0]]]));
     return this.triangleIndices.flatMap(t => [[t[0], t[1]], [t[1], t[2]], [t[2], t[0]]]);
   }
 }

@@ -23,6 +23,7 @@
     "color": "^3.1.2",
     "delaunator": "^4.0.1",
     "rxjs": "~6.5.5",
+    "sanitize-html": "^1.27.3",
     "smoothstep": "^1.0.1",
     "tslib": "^2.0.0",
     "zone.js": "~0.10.3"

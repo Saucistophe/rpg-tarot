@@ -1,6 +1,7 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import * as Color from 'color';
 import * as smoothstep from 'smoothstep';
+import { AvatarService, Avatar } from '../services/avatar.service';
 
 enum SkyType {
   CLEAR_DAY,
@@ -13,28 +14,41 @@ enum GroundType {
   GRASS,
   DIRT,
   ROCK,
-  SAND
+  SAND,
 }
+
+
 
 @Component({
   selector: 'rpg-card',
   templateUrl: './card.component.html',
-  styleUrls: ['./card.component.scss']
+  styleUrls: ['./card.component.scss'],
 })
 export class CardComponent implements OnInit {
+  avatarType: Avatar;
+  skyType: SkyType;
+  groundType: GroundType;
 
-  skyType = this.randomValueForEnum(SkyType);
-  groundType = this.randomValueForEnum(GroundType);
+  constructor(private avatarService: AvatarService) {
+    this.avatarType = this.randomValueForEnum(Avatar);
+    switch (this.avatarType) {
+      case Avatar.FULL_MOON:
+        this.skyType = SkyType.NIGHT;
+        break;
+      default:
+        this.skyType = this.randomValueForEnum(SkyType);
+        break;
+    }
 
-  constructor() {
+    this.groundType = this.randomValueForEnum(GroundType);
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
   randomValueForEnum<T>(enumeration: T): T[keyof T] {
     const values = Object.keys(enumeration);
-    const enumKey = values[Math.floor((0.5 + Math.random() / 2) * values.length)];
+    const enumKey =
+      values[Math.floor((0.5 + Math.random() / 2) * values.length)];
     return enumeration[enumKey];
   }
 
@@ -46,10 +60,15 @@ export class CardComponent implements OnInit {
         color = Color('skyblue').lighten((1 - y) / 3);
         break;
       case SkyType.DUSK:
-        color = Color('indigo').rotate(80 * smoothstep(0, 1, y)).lighten(y * 0.8).desaturate(y * 0.1);
+        color = Color('indigo')
+          .rotate(80 * smoothstep(0, 1, y))
+          .lighten(y * 0.8)
+          .desaturate(y * 0.1);
         break;
       case SkyType.DAWN:
-        color = Color('orange').rotate(50 * y).lighten(y * 0.8);
+        color = Color('orange')
+          .rotate(50 * y)
+          .lighten(y * 0.8);
         break;
       case SkyType.NIGHT:
         color = Color('midnightblue').darken(0.8 - 0.8 * y);
@@ -63,7 +82,7 @@ export class CardComponent implements OnInit {
     // color = color.mix(Color('gray'), Math.max(0, 0.8 - 0.4 * Math.abs(y - 0.2)));
 
     return color.hex();
-  }
+  };
 
   groundColorFunction = (x: number, y: number) => {
     let color: Color;
@@ -79,7 +98,9 @@ export class CardComponent implements OnInit {
         color = Color('darkgray').darken(y * 0.7);
         break;
       case GroundType.SAND:
-        color = Color('orange').rotate(10 * y).darken(y * 0.8);
+        color = Color('orange')
+          .rotate(10 * y)
+          .darken(y * 0.8);
         break;
       default:
         color = Color('purple');
@@ -99,5 +120,13 @@ export class CardComponent implements OnInit {
       default:
     }
     return color.hex();
+  };
+
+  get avatarPoints() {
+    return this.avatarService. getPolygonPoints(this.avatarType);
+  }
+
+  get avatarName() {
+    return 'THE⬩' + Avatar[this.avatarType].replace('_', '⬩');
   }
 }

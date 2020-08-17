@@ -1,3 +1,7 @@
+@font-face {
+  font-family: "Chanticleer";
+  src: url("/assets/fonts/chanticleerroman.bold.otf") format("opentype");
+}
 
 body {
   background: #505050;
@@ -15,5 +19,6 @@ body {
   page-break-after:always;
   scroll-snap-align: start;
 }
+
 
 
