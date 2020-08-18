@@ -41,6 +41,8 @@ $card-borders: dashed 0.5px gray;
         border-bottom: solid 0.5mm #121212;
 
         font-family: 'Chanticleer';
+        // Compensate the text being aligned on the baseline and not perfectly centered.
+        padding-top: 0.15em;
       }
     }
   }

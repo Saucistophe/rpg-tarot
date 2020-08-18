@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import * as Color from 'color';
 import * as smoothstep from 'smoothstep';
 import { AvatarService, Avatar } from '../services/avatar.service';
@@ -25,12 +25,13 @@ enum GroundType {
   styleUrls: ['./card.component.scss'],
 })
 export class CardComponent implements OnInit {
+  @Input()
   avatarType: Avatar;
+
   skyType: SkyType;
   groundType: GroundType;
 
   constructor(private avatarService: AvatarService) {
-    this.avatarType = this.randomValueForEnum(Avatar);
     switch (this.avatarType) {
       case Avatar.FULL_MOON:
         this.skyType = SkyType.NIGHT;
