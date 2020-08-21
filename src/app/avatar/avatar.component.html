@@ -1,1 +1,9 @@
-<p>avatar works!</p>
+<svg>
+  <ng-container [ngSwitch]="avatarType">
+    <polygon
+      *ngSwitchCase="AvatarType.SUN"
+      points="0,100 0,0 100,0 100,100"
+    ></polygon>
+    <text x="50" y="50" *ngSwitchDefault>?</text>
+  </ng-container>
+</svg>

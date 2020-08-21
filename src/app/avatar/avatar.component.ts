@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { AvatarType } from '../model/avatar-type.enum';
 
 @Component({
   selector: 'rpg-avatar',
@@ -6,6 +7,11 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./avatar.component.scss']
 })
 export class AvatarComponent implements OnInit {
+
+  @Input()
+  avatarType: AvatarType;
+
+  AvatarType= AvatarType;
 
   constructor() { }
 

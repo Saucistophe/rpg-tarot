@@ -9,7 +9,7 @@ import { AvatarType } from './model/avatar-type.enum';
 export class AppComponent {
   title = 'rpg-tarot';
 
-  get avatars(): Array<string> {
-    return Object.keys(AvatarType).filter((k) => isNaN(Number(AvatarType[k as any])));
+  get avatars(): Array<AvatarType> {
+    return [...Array(Object.keys(AvatarType).length/2).keys()];
   }
 }
