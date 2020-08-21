@@ -5,12 +5,7 @@
     "outDir": "./out-tsc/app",
     "types": []
   },
-  "files": [
-    "src/main.ts",
-    "src/polyfills.ts",
-  ],
-  "include": [
-    "src/**/*.d.ts",
-    "src/**/*"
-  ]
+  "files": ["src/main.ts", "src/polyfills.ts"],
+  "include": ["src/**/*.d.ts", "src/**/*"],
+  "exclude": ["test.ts", "**/*.spec.ts", "**/*.worker.ts", "**/*.stories.ts"]
 }

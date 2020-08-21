@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Avatar } from './services/avatar.service';
+import { AvatarType } from './model/avatar-type.enum';
 
 @Component({
   selector: 'rpg-root',
@@ -10,6 +10,6 @@ export class AppComponent {
   title = 'rpg-tarot';
 
   get avatars(): Array<string> {
-    return Object.keys(Avatar).filter((k) => isNaN(Number(Avatar[k as any])));
+    return Object.keys(AvatarType).filter((k) => isNaN(Number(AvatarType[k as any])));
   }
 }

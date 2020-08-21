@@ -1,13 +1,5 @@
 import { Injectable } from '@angular/core';
-
-export enum Avatar {
-  TORCH,
-  FULL_MOON,
-  SUN,
-  CHEST,
-  BAG,
-  BOAT,
-}
+import { AvatarType } from '../model/avatar-type.enum';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +7,9 @@ export enum Avatar {
 export class AvatarService {
   constructor() {}
 
-  public getPolygonPoints(avatar: Avatar) {
+  public getPolygonPoints(avatar: AvatarType) {
     switch (avatar) {
-      case Avatar.SUN:
+      case AvatarType.SUN:
         return '0,100 0,0 100,0 100,100';
 
       default:

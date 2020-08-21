@@ -1,7 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as Color from 'color';
 import * as smoothstep from 'smoothstep';
-import { AvatarService, Avatar } from '../services/avatar.service';
+import { AvatarService } from '../services/avatar.service';
+import { AvatarType } from '../model/avatar-type.enum';
+
 
 enum SkyType {
   CLEAR_DAY,
@@ -26,14 +28,14 @@ enum GroundType {
 })
 export class CardComponent implements OnInit {
   @Input()
-  avatarType: Avatar;
+  avatarType: AvatarType;
 
   skyType: SkyType;
   groundType: GroundType;
 
   constructor(private avatarService: AvatarService) {
     switch (this.avatarType) {
-      case Avatar.FULL_MOON:
+      case AvatarType.FULL_MOON:
         this.skyType = SkyType.NIGHT;
         break;
       default:
@@ -128,6 +130,6 @@ export class CardComponent implements OnInit {
   }
 
   get avatarName() {
-    return 'THE⬩' + Avatar[this.avatarType].replace('_', '⬩');
+    return 'THE⬩' + AvatarType[this.avatarType].replace('_', '⬩');
   }
 }
