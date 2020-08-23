@@ -7,7 +7,7 @@ export interface DrawingPart {
   contourPoints: number[][];
   triangleVertices?: number[][];
   triangleIndices?: number[][];
-  colorFunction: (x: number, y: number) => string;
+  colorFunction: (coordinates: number[]) => string;
 }
 
 @Component({
@@ -28,16 +28,29 @@ export class AvatarComponent implements OnInit {
   ngOnInit(): void {
     switch (this.avatarType) {
       case AvatarType.SUN:
+        // Generated using JSON.stringify([...Array(16).keys()].map(i => [Math.cos(i/8*Math.PI),Math.sin(i/8*Math.PI)].map(x => Math.round(x*22+50))));
         this.drawingParts.push({
           contourPoints: [
-            [50, 72],
             [72, 50],
-            [50, 28],
+            [70, 58],
+            [66, 66],
+            [58, 70],
+            [50, 72],
+            [42, 70],
+            [34, 66],
+            [30, 58],
             [28, 50],
+            [30, 42],
+            [34, 34],
+            [42, 30],
+            [50, 28],
+            [58, 30],
+            [66, 34],
+            [70, 42],
           ],
-          colorFunction: (x, y) =>
+          colorFunction: (coordinates: number[]) =>
             Color('yellow')
-              .lighten(Math.max(x, y) / 100)
+              .lighten(Math.max(...coordinates) / 100)
               .hex(),
         });
         break;
@@ -46,7 +59,7 @@ export class AvatarComponent implements OnInit {
 
     // Create a grid
     const grid: number[][] = [];
-    const gridStep = 4;
+    const gridStep = 10;
     for (let i = 0; i <= 100; i += gridStep) {
       for (let j = 0; j <= 100; j += gridStep) {
         // Mess it up a little
@@ -94,5 +107,18 @@ export class AvatarComponent implements OnInit {
     }
 
     return inside;
+  }
+
+  centroid(vertices: number[][], triangleIndices: number[]): number[] {
+    const x =
+      vertices[triangleIndices[0]][0] +
+      vertices[triangleIndices[1]][0] +
+      vertices[triangleIndices[2]][0];
+    const y =
+      vertices[triangleIndices[0]][1] +
+      vertices[triangleIndices[1]][1] +
+      vertices[triangleIndices[2]][1];
+
+    return [x / 3, y / 3];
   }
 }
