@@ -1,9 +1,23 @@
-<svg>
-  <ng-container [ngSwitch]="avatarType">
+<svg viewBox="0 0 100 100">
+  <ng-container *ngFor="let drawingPart of drawingParts">
     <polygon
-      *ngSwitchCase="AvatarType.SUN"
-      points="0,100 0,0 100,0 100,100"
+      *ngFor="let triangle of drawingPart.triangleIndices"
+      stroke="none"
+      [attr.points]="
+        drawingPart.triangleVertices[triangle[0]][0] +
+        ',' +
+        drawingPart.triangleVertices[triangle[0]][1] +
+        ' ' +
+        drawingPart.triangleVertices[triangle[1]][0] +
+        ',' +
+        drawingPart.triangleVertices[triangle[1]][1] +
+        ' ' +
+        drawingPart.triangleVertices[triangle[2]][0] +
+        ',' +
+        drawingPart.triangleVertices[triangle[2]][1]
+      "
     ></polygon>
-    <text x="50" y="50" *ngSwitchDefault>?</text>
   </ng-container>
+  <text *ngIf="drawingParts.length === 0" x="50" y="50">?</text>
 </svg>
+<!-- [attr.fill]="getColor(triangle)" -->
