@@ -5,31 +5,31 @@
       stroke="none"
       [attr.fill]="
         drawingPart.colorFunction(
-          centroid(drawingPart.triangleVertices, triangle)
+          centroid(drawingPart.vertices, triangle)
         )
       "
       [attr.points]="
-        drawingPart.triangleVertices[triangle[0]][0] +
+        drawingPart.vertices[triangle[0]][0] +
         ',' +
-        drawingPart.triangleVertices[triangle[0]][1] +
+        drawingPart.vertices[triangle[0]][1] +
         ' ' +
-        drawingPart.triangleVertices[triangle[1]][0] +
+        drawingPart.vertices[triangle[1]][0] +
         ',' +
-        drawingPart.triangleVertices[triangle[1]][1] +
+        drawingPart.vertices[triangle[1]][1] +
         ' ' +
-        drawingPart.triangleVertices[triangle[2]][0] +
+        drawingPart.vertices[triangle[2]][0] +
         ',' +
-        drawingPart.triangleVertices[triangle[2]][1]
+        drawingPart.vertices[triangle[2]][1]
       "
     ></polygon>
     <line
-      *ngFor="let edge of edges"
-      [attr.x1]="drawingPart.triangleVertices[edge[0]][0]"
-      [attr.x2]="drawingPart.triangleVertices[edge[1]][0]"
-      [attr.y1]="drawingPart.triangleVertices[edge[0]][1]"
-      [attr.y2]="drawingPart.triangleVertices[edge[1]][1]"
+      *ngFor="let edge of drawingPart.edges"
+      [attr.x1]="drawingPart.vertices[edge[0]][0]"
+      [attr.x2]="drawingPart.vertices[edge[1]][0]"
+      [attr.y1]="drawingPart.vertices[edge[0]][1]"
+      [attr.y2]="drawingPart.vertices[edge[1]][1]"
       stroke-linecap="butt"
-      [attr.stroke]="getEdgeColor(edge)"
+      [attr.stroke]="drawingPart.edgeColorFunction(centroid(drawingPart.vertices, edge))"
       stroke-width="0.2%"
     />
   </ng-container>

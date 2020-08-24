@@ -3,12 +3,19 @@ import { AvatarType } from '../model/avatar-type.enum';
 import Delaunator from 'delaunator';
 import Color from 'color';
 
-export interface DrawingPart {
-  contourPoints: number[][];
-  triangleVertices?: number[][];
-  triangleIndices?: number[][];
-  colorFunction: (coordinates: number[]) => string;
-  edgeColorFunction: (coordinates: number[]) => string;
+export class DrawingPart {
+  public vertices: number[][] = [];
+  public triangleIndices: number[][] = [];
+
+  constructor(
+    public contourPoints: number[][],
+    public colorFunction: (coordinates: number[]) => string,
+    public edgeColorFunction= (coordinates: number[]) => 'black'
+  ) {}
+
+  public get edges(): number[][] {
+    return this.triangleIndices.flatMap(t => [[t[0], t[1]], [t[1], t[2]], [t[2], t[0]]]);
+  }
 }
 
 @Component({
@@ -30,41 +37,49 @@ export class AvatarComponent implements OnInit {
     switch (this.avatarType) {
       case AvatarType.SUN:
         // Generated using JSON.stringify([...Array(16).keys()].map(i => [Math.cos(i/8*Math.PI),Math.sin(i/8*Math.PI)].map(x => Math.round(x*22+50))));
-        this.drawingParts.push({
-          contourPoints: [
-            [72, 50],
-            [70, 58],
-            [66, 66],
-            [58, 70],
-            [50, 72],
-            [42, 70],
-            [34, 66],
-            [30, 58],
-            [28, 50],
-            [30, 42],
-            [34, 34],
-            [42, 30],
-            [50, 28],
-            [58, 30],
-            [66, 34],
-            [70, 42],
-          ],
-          colorFunction: (coordinates: number[]) =>
-            Color('orange')
-              .mix(Color('yellow'), this.gradient(Math.min(...coordinates), 28,72))
-              .hex(),
-          edgeColorFunction: (coordinates: number[]) =>
-            Color('red')
-              .mix(Color('orange'), this.gradient(Math.min(...coordinates), 28,72))
-              .hex(),
-        });
+        this.drawingParts.push(
+          new DrawingPart(
+            [
+              [72, 50],
+              [70, 58],
+              [66, 66],
+              [58, 70],
+              [50, 72],
+              [42, 70],
+              [34, 66],
+              [30, 58],
+              [28, 50],
+              [30, 42],
+              [34, 34],
+              [42, 30],
+              [50, 28],
+              [58, 30],
+              [66, 34],
+              [70, 42],
+            ],
+            (coordinates: number[]) =>
+              Color('orange')
+                .mix(
+                  Color('yellow'),
+                  this.gradient(Math.min(...coordinates), 28, 60)
+                )
+                .hex(),
+            (coordinates: number[]) =>
+              Color('gold')
+                .mix(
+                  Color('orange'),
+                  this.gradient(Math.min(...coordinates), 28, 70)
+                )
+                .hex()
+          )
+        );
         break;
       default:
     }
 
     // Create a grid
     const grid: number[][] = [];
-    const gridStep = 10;
+    const gridStep = 8;
     for (let i = 0; i <= 100; i += gridStep) {
       for (let j = 0; j <= 100; j += gridStep) {
         // Mess it up a little
@@ -76,13 +91,12 @@ export class AvatarComponent implements OnInit {
 
     this.drawingParts.forEach((part) => {
       // Keep only grid vertices inside the contour
-      const triangleVertices = grid.filter((p) =>
+      const vertices = grid.filter((p) =>
         this.inside(p, part.contourPoints)
       );
-      // Run a Delaunay triangulation
-      part.triangleVertices = [...triangleVertices, ...part.contourPoints];
-      part.triangleIndices = [];
-      const rawTrianglesIndices = Delaunator.from(part.triangleVertices)
+      // Run a Delaunay triangulation on the contour and grid points
+      part.vertices = [...vertices, ...part.contourPoints];
+      const rawTrianglesIndices = Delaunator.from(part.vertices)
         .triangles;
       for (let i = 0; i < rawTrianglesIndices.length / 3; i++) {
         part.triangleIndices.push(rawTrianglesIndices.slice(i * 3, i * 3 + 3));
@@ -114,17 +128,17 @@ export class AvatarComponent implements OnInit {
     return inside;
   }
 
-  centroid(vertices: number[][], triangleIndices: number[]): number[] {
-    const x =
-      vertices[triangleIndices[0]][0] +
-      vertices[triangleIndices[1]][0] +
-      vertices[triangleIndices[2]][0];
-    const y =
-      vertices[triangleIndices[0]][1] +
-      vertices[triangleIndices[1]][1] +
-      vertices[triangleIndices[2]][1];
+  centroid(vertices: number[][], shapeIndices: number[]): number[] {
+  let centroidX = 0;
+    let centroidY = 0;
+    for (const i of shapeIndices) {
+      centroidX += vertices[i][0];
+      centroidY += vertices[i][1];
+    }
+    centroidX /= shapeIndices.length;
+    centroidY /= shapeIndices.length;
 
-    return [x / 3, y / 3];
+    return [centroidX, centroidY];
   }
 
   gradient(x, xMin, xMax): number {
