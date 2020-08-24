@@ -8,6 +8,7 @@ export interface DrawingPart {
   triangleVertices?: number[][];
   triangleIndices?: number[][];
   colorFunction: (coordinates: number[]) => string;
+  edgeColorFunction: (coordinates: number[]) => string;
 }
 
 @Component({
@@ -49,8 +50,12 @@ export class AvatarComponent implements OnInit {
             [70, 42],
           ],
           colorFunction: (coordinates: number[]) =>
-            Color('yellow')
-              .lighten(Math.max(...coordinates) / 100)
+            Color('orange')
+              .mix(Color('yellow'), this.gradient(Math.min(...coordinates), 28,72))
+              .hex(),
+          edgeColorFunction: (coordinates: number[]) =>
+            Color('red')
+              .mix(Color('orange'), this.gradient(Math.min(...coordinates), 28,72))
               .hex(),
         });
         break;
@@ -120,5 +125,12 @@ export class AvatarComponent implements OnInit {
       vertices[triangleIndices[2]][1];
 
     return [x / 3, y / 3];
+  }
+
+  gradient(x, xMin, xMax): number {
+    let result = (x - xMin) / (xMax - xMin);
+    result = Math.max(0, result);
+    result = Math.min(1, result);
+    return result;
   }
 }
