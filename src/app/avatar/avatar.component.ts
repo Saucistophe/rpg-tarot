@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AvatarType } from '../model/avatar-type.enum';
 import Delaunator from 'delaunator';
+import cdt2d from 'cdt2d';
 import Color from 'color';
 
 export class DrawingPart {
@@ -47,7 +48,7 @@ export class AvatarComponent implements OnInit {
             [
               [72, 50], [70, 58], [66, 66], [58, 70], [50, 72], [42, 70],
               [34, 66], [30, 58], [28, 50], [30, 42], [34, 34], [42, 30],
-               [50, 28], [58, 30], [66, 34], [70, 42],
+              [50, 28], [58, 30], [66, 34], [70, 42],
             ],
             (coordinates: number[]) =>
               Color('orange')
@@ -70,7 +71,7 @@ export class AvatarComponent implements OnInit {
           // prettier-ignore
           new DrawingPart(
             [
-              [55, 75], [45, 75], [45, 82], [48,90], [45,100], [50, 90], [52, 82], 
+              [55, 75], [45, 75], [45, 82], [48,90], [45,100], [50, 90], [52, 82],
             ],
             (coordinates: number[]) =>
               Color('red')
@@ -108,11 +109,10 @@ export class AvatarComponent implements OnInit {
       // Keep only grid vertices inside the contour
       const vertices = grid.filter((p) => this.inside(p, part.contourPoints));
       // Run a Delaunay triangulation on the contour and grid points
-      part.vertices = [...vertices, ...part.contourPoints];
-      const rawTrianglesIndices = Delaunator.from(part.vertices).triangles;
-      for (let i = 0; i < rawTrianglesIndices.length / 3; i++) {
-        part.triangleIndices.push(rawTrianglesIndices.slice(i * 3, i * 3 + 3));
-      }
+      part.vertices = [...part.contourPoints, ...vertices];
+      const outerContourEdges = [...Array(part.contourPoints.length - 1).keys()].map(i =>[i, i+1]);
+      outerContourEdges.push([part.contourPoints.length - 1,0]);
+      part.triangleIndices = cdt2d(part.vertices, outerContourEdges, {exterior: false});
     });
   }
 
