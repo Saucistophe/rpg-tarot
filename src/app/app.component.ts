@@ -10,6 +10,7 @@ export class AppComponent {
   title = 'rpg-tarot';
 
   get avatars(): Array<AvatarType> {
-    return [...Array(Object.keys(AvatarType).length/2).keys()];
+  //  return [...Array(Object.keys(AvatarType).length/2).keys()];
+  return [AvatarType.SUN];
   }
 }

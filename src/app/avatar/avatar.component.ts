@@ -46,9 +46,9 @@ export class AvatarComponent implements OnInit {
           // prettier-ignore
           new DrawingPart(
             [
-              [72, 50], [70, 58], [66, 66], [58, 70], [50, 72], [42, 70],
-              [34, 66], [30, 58], [28, 50], [30, 42], [34, 34], [42, 30],
-              [50, 28], [58, 30], [66, 34], [70, 42],
+              [80,50],[78,61],[71,71],[61,78],[50,80],[39,78],[29,71],
+              [22,61],[20,50],[22,39],[29,29],[39,22],[50,20],[61,22],
+              [71,29],[78,39]
             ],
             (coordinates: number[]) =>
               Color('orange')
@@ -69,10 +69,7 @@ export class AvatarComponent implements OnInit {
 
         this.drawingParts.push(
           // prettier-ignore
-          new DrawingPart(
-            [
-              [55, 75], [45, 75], [45, 82], [48,90], [45,100], [50, 90], [52, 82],
-            ],
+          new DrawingPart([[45.5,82],[54.5,82],[51.5,87],[53.5,94],[48.5,100],[49.5,96],[45.5,89]],
             (coordinates: number[]) =>
               Color('red')
                 .mix(
@@ -89,6 +86,67 @@ export class AvatarComponent implements OnInit {
                 .hex()
           )
         );
+
+        this.drawingParts.push(
+          // prettier-ignore
+          new DrawingPart([[82,54.5],[82,45.5],[87,48.5],[94,46.5],[100,51.5],[96,50.5],[89,54.5]],
+          (coordinates: number[]) =>
+              Color('red')
+                .mix(
+                  Color('orange'),
+                  this.gradient(coordinates[0], 100, 75)
+                )
+                .hex(),
+            (coordinates: number[]) =>
+              Color('gold')
+                .mix(
+                  Color('orange'),
+                  this.gradient(Math.min(...coordinates), 28, 70)
+                )
+                .hex()
+          )
+        );
+
+        this.drawingParts.push(
+          // prettier-ignore
+          new DrawingPart([[54.5,18],[45.5,18],[48.5,13],[46.5,6],[51.5,0],[50.5,4],[54.5,11]],
+          (coordinates: number[]) =>
+              Color('red')
+                .mix(
+                  Color('orange'),
+                  this.gradient(coordinates[0], 100, 75)
+                )
+                .hex(),
+            (coordinates: number[]) =>
+              Color('gold')
+                .mix(
+                  Color('orange'),
+                  this.gradient(Math.min(...coordinates), 28, 70)
+                )
+                .hex()
+          )
+        );
+
+        this.drawingParts.push(
+          // prettier-ignore
+          new DrawingPart([[18,45.5],[18,54.5],[13,51.5],[6,53.5],[0,48.5],[4,49.5],[11,45.5]],
+          (coordinates: number[]) =>
+              Color('red')
+                .mix(
+                  Color('orange'),
+                  this.gradient(coordinates[0], 100, 75)
+                )
+                .hex(),
+            (coordinates: number[]) =>
+              Color('gold')
+                .mix(
+                  Color('orange'),
+                  this.gradient(Math.min(...coordinates), 28, 70)
+                )
+                .hex()
+          )
+        );
+
         break;
       default:
     }
@@ -110,9 +168,13 @@ export class AvatarComponent implements OnInit {
       const vertices = grid.filter((p) => this.inside(p, part.contourPoints));
       // Run a Delaunay triangulation on the contour and grid points
       part.vertices = [...part.contourPoints, ...vertices];
-      const outerContourEdges = [...Array(part.contourPoints.length - 1).keys()].map(i =>[i, i+1]);
-      outerContourEdges.push([part.contourPoints.length - 1,0]);
-      part.triangleIndices = cdt2d(part.vertices, outerContourEdges, {exterior: false});
+      const outerContourEdges = [
+        ...Array(part.contourPoints.length - 1).keys(),
+      ].map((i) => [i, i + 1]);
+      outerContourEdges.push([part.contourPoints.length - 1, 0]);
+      part.triangleIndices = cdt2d(part.vertices, outerContourEdges, {
+        exterior: false,
+      });
     });
   }
 
