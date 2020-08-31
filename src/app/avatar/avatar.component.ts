@@ -1,19 +1,53 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { AvatarType } from '../model/avatar-type.enum';
-import Delaunator from 'delaunator';
 import cdt2d from 'cdt2d';
 import Color from 'color';
 
 export class DrawingPart {
   public vertices: number[][] = [];
   public triangleIndices: number[][] = [];
+  private gradientStop1: number[];
+  private gradientStop2: number[];
 
   constructor(
     public contourPoints: number[][],
-    public colorFunction: (coordinates: number[]) => string,
-    public edgeColorFunction = (coordinates: number[]) => 'black'
-  ) {}
+    private color1: string,
+    private color2: string,
+    // 0 degrees: left to right, 90: bottom to top.
+    private gradientAngleDegrees: number,
+    private gradientSpansWholeCanvas = false
+  ) {
+    let gradientBoundaries = gradientSpansWholeCanvas ? [[0,0],[0,100],[100,0],[100,100]]: contourPoints.concat();
+    gradientBoundaries.forEach(p => {p.push(this.projectOnGradient(p[0], p[1]))});
+    gradientBoundaries.sort((p1,p2) => p1[2] - p2[2]);
+    this.gradientStop1 = gradientBoundaries[0];
+    this.gradientStop2 = gradientBoundaries[gradientBoundaries.length - 1];
+  }
 
+  private projectOnGradient(x: number, y: number) {
+    // Consider a line running from [0,0] towards the desired angle.
+    const referenceLineX = Math.cos(this.gradientAngleDegrees * Math.PI / 180);
+    const referenceLineY = Math.sin(this.gradientAngleDegrees * Math.PI / 180);
+    return x * referenceLineX + y * referenceLineY;
+  }
+
+  public getColor([x,y]: number[]) {
+  const vx = this.gradientStop2[0] - this.gradientStop1[0];
+  const vy = this.gradientStop2[1] - this.gradientStop1[1];
+  const dotProduct = (x - this.gradientStop1[0]) * vx
+    + (y - this.gradientStop1[1]) * vy;
+  let ratio = dotProduct / (vx * vx + vy * vy);
+    ratio = Math.max(0, ratio);
+    ratio = Math.min(1, ratio);
+
+    return Color(this.color1)
+        .mix(Color(this.color2), ratio)
+        .hex();
+  }
+
+  /**
+   * @returns A list of all triangles' possible edges, in the form of pair of vertex indices.
+   */
   public get edges(): number[][] {
     return this.triangleIndices.flatMap((t) => [
       [t[0], t[1]],
@@ -50,100 +84,35 @@ export class AvatarComponent implements OnInit {
               [22,61],[20,50],[22,39],[29,29],[39,22],[50,20],[61,22],
               [71,29],[78,39]
             ],
-            (coordinates: number[]) =>
-              Color('orange')
-                .mix(
-                  Color('yellow'),
-                  this.gradient(Math.min(...coordinates), 28, 60)
-                )
-                .hex(),
-            (coordinates: number[]) =>
-              Color('gold')
-                .mix(
-                  Color('orange'),
-                  this.gradient(Math.min(...coordinates), 28, 70)
-                )
-                .hex()
+            'orange', 'yellow', 180
           )
         );
 
         this.drawingParts.push(
           // prettier-ignore
           new DrawingPart([[45.5,82],[54.5,82],[51.5,87],[53.5,94],[48.5,100],[49.5,96],[45.5,89]],
-            (coordinates: number[]) =>
-              Color('red')
-                .mix(
-                  Color('orange'),
-                  this.gradient(coordinates[0], 100, 75)
-                )
-                .hex(),
-            (coordinates: number[]) =>
-              Color('gold')
-                .mix(
-                  Color('orange'),
-                  this.gradient(Math.min(...coordinates), 28, 70)
-                )
-                .hex()
+            'red', 'orange', 0
           )
         );
 
         this.drawingParts.push(
           // prettier-ignore
           new DrawingPart([[82,54.5],[82,45.5],[87,48.5],[94,46.5],[100,51.5],[96,50.5],[89,54.5]],
-          (coordinates: number[]) =>
-              Color('red')
-                .mix(
-                  Color('orange'),
-                  this.gradient(coordinates[0], 100, 75)
-                )
-                .hex(),
-            (coordinates: number[]) =>
-              Color('gold')
-                .mix(
-                  Color('orange'),
-                  this.gradient(Math.min(...coordinates), 28, 70)
-                )
-                .hex()
+          'red', 'orange', 0
           )
         );
 
         this.drawingParts.push(
           // prettier-ignore
           new DrawingPart([[54.5,18],[45.5,18],[48.5,13],[46.5,6],[51.5,0],[50.5,4],[54.5,11]],
-          (coordinates: number[]) =>
-              Color('red')
-                .mix(
-                  Color('orange'),
-                  this.gradient(coordinates[0], 100, 75)
-                )
-                .hex(),
-            (coordinates: number[]) =>
-              Color('gold')
-                .mix(
-                  Color('orange'),
-                  this.gradient(Math.min(...coordinates), 28, 70)
-                )
-                .hex()
+          'red', 'orange', 0
           )
         );
 
         this.drawingParts.push(
           // prettier-ignore
           new DrawingPart([[18,45.5],[18,54.5],[13,51.5],[6,53.5],[0,48.5],[4,49.5],[11,45.5]],
-          (coordinates: number[]) =>
-              Color('red')
-                .mix(
-                  Color('orange'),
-                  this.gradient(coordinates[0], 100, 75)
-                )
-                .hex(),
-            (coordinates: number[]) =>
-              Color('gold')
-                .mix(
-                  Color('orange'),
-                  this.gradient(Math.min(...coordinates), 28, 70)
-                )
-                .hex()
+          'red', 'orange', 0
           )
         );
 
@@ -213,12 +182,5 @@ export class AvatarComponent implements OnInit {
     centroidY /= shapeIndices.length;
 
     return [centroidX, centroidY];
-  }
-
-  gradient(x, xMin, xMax): number {
-    let result = (x - xMin) / (xMax - xMin);
-    result = Math.max(0, result);
-    result = Math.min(1, result);
-    return result;
   }
 }

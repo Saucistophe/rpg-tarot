@@ -4,9 +4,7 @@
       *ngFor="let triangle of drawingPart.triangleIndices"
       stroke="none"
       [attr.fill]="
-        drawingPart.colorFunction(
-          centroid(drawingPart.vertices, triangle)
-        )
+        drawingPart.getColor(centroid(drawingPart.vertices, triangle))
       "
       [attr.points]="
         drawingPart.vertices[triangle[0]][0] +
@@ -22,7 +20,7 @@
         drawingPart.vertices[triangle[2]][1]
       "
     ></polygon>
-    <line
+   <!--  <line
       *ngFor="let edge of drawingPart.edges"
       [attr.x1]="drawingPart.vertices[edge[0]][0]"
       [attr.x2]="drawingPart.vertices[edge[1]][0]"
@@ -31,7 +29,7 @@
       stroke-linecap="butt"
       [attr.stroke]="drawingPart.edgeColorFunction(centroid(drawingPart.vertices, edge))"
       stroke-width="0.2%"
-    />
+    /> -->
   </ng-container>
   <text *ngIf="drawingParts.length === 0" x="50" y="50">?</text>
 </svg>
